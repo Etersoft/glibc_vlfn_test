@@ -15,9 +15,10 @@ void open_test(char* arg) {
 	if ((fd = open(arg,  O_RDONLY, 0)) < 0) {
 		perror("open_test: open() error: ");
 		printf("open_test: can't open file %s \n\n", arg);
-	} else
+	} else	{
 		printf("open_test: file %s is opened with descriptor = %d\n\n", arg, fd);
-	close(fd);
+		close(fd);
+		}
 
 }
 
@@ -37,9 +38,10 @@ void fopen_test(char* arg) {
 	if ((fp = fopen(arg, "r")) == NULL) {
 		perror("fopen_test: fopen() error: ");
 		printf("fopen_test: can't open file %s \n\n", arg);
-	} else
+	} else	{
 		printf("fopen_test: file %s is opened\n\n", arg);
-	fclose(fp);
+		fclose(fp);
+		}
 }
 
 
