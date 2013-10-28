@@ -108,7 +108,8 @@ int main (int argc, char* argv[]) {
 	if (argv[1] != 0) 
 		filename = argv[1]; 
 	else
-		filename = "somename";
+		filename = "ещеболеедлинноеоченьдлинноеимяоченьдлинноеимяоченьдлинноеимяоченьдлинноеимяоченьдлинноеимя\
+оченьдлинноеимяоченьдлинноеимяоченьдлинноеимяоченьдлинноеимя";
 		
 	creat_test(filename);
 	open_test(filename);
