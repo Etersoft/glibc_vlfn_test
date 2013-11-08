@@ -23,8 +23,7 @@ int open_test(char* arg) {
 }
 
 int creat_test(char* arg) {
-	int fd;
-	if ((fd = creat(arg,  0)) < 0) {
+	if ((creat(arg,  0)) < 0) {
 		perror("crear_test: creat() error");
 		return -1;
 	} else {
@@ -59,8 +58,8 @@ int stat_test(char* arg) {
 
 
 int unlink_test(char* arg) {
-	int ret;
-	if ((ret = unlink(arg)) < 0) {
+	
+	if ((unlink(arg)) < 0) {
 		perror("unlink_test: unlink() error");
 		return -1;
 	} else	{
@@ -70,8 +69,8 @@ int unlink_test(char* arg) {
 }
 
 int remove_test(char* arg) {
-	int ret;
-	if ((ret = remove(arg)) < 0) {
+	
+	if ((remove(arg)) < 0) {
 		perror("remove_test: remove() error");
 		return -1;
 	} else	{
@@ -81,8 +80,8 @@ int remove_test(char* arg) {
 }
 
 int access_test(char* arg) {
-	int ret;
-	if ((ret = access(arg, F_OK)) < 0) {
+	
+	if ((access(arg, F_OK)) < 0) {
 		perror("access_test: access() error");
 		return -1;
 	} else	{
@@ -92,8 +91,8 @@ int access_test(char* arg) {
 }
 
 int chmod_test(char* arg) {
-	int ret;
-	if ((ret = chmod(arg, S_IRWXU)) < 0) {
+	
+	if ((chmod(arg, S_IRWXU)) < 0) {
 		perror("chmod_test: chmod() error");
 		return -1;
 	} else	{
@@ -103,8 +102,8 @@ int chmod_test(char* arg) {
 }
 
 int truncate_test(char* arg) {
-	int ret;
-	if ((ret = truncate(arg, 100000)) < 0) {
+	
+	if ((truncate(arg, 100000)) < 0) {
 		perror("truncate_test: truncate() error");
 		return -1;
 	} else	{
@@ -145,8 +144,8 @@ int read_open_dir_test(char* arg ) {
 }
 
 int link_test(char* arg1, char* arg2) {
-	int ret;
-	if ((ret = link(arg1, arg2)) < 0) {
+	
+	if ((link(arg1, arg2)) < 0) {
 		perror("link_test: link() error");
 		return -1;
 	} else	{
@@ -157,8 +156,8 @@ int link_test(char* arg1, char* arg2) {
 
 
 int rename_test(char* arg1, char* arg2) {
-	int ret;
-	if ((ret = rename(arg1, arg2)) < 0) {
+	
+	if ((rename(arg1, arg2)) < 0) {
 		perror("rename_test: rename() error");
 		return -1;
 	} else	{
@@ -169,8 +168,8 @@ int rename_test(char* arg1, char* arg2) {
 
 
 int symlink_test(char* arg1, char* arg2) {
-	int ret;
-	if ((ret = symlink(arg1, arg2)) < 0) {
+	
+	if ((symlink(arg1, arg2)) < 0) {
 		perror("symlink_test: symlink() error");
 		return -1;
 	} else	{
@@ -181,8 +180,8 @@ int symlink_test(char* arg1, char* arg2) {
 
 
 int mkdir_test(char* arg) {
-	int ret;
-	if ((ret = mkdir(arg, S_IRUSR)) < 0) {
+	
+	if ((mkdir(arg, S_IRUSR)) < 0) {
 		perror("mkdir_test: mkdir() error");
 		return -1;
 	} else	{
@@ -192,8 +191,8 @@ int mkdir_test(char* arg) {
 }
 
 int rmdir_test(char* arg) {
-	int ret;
-	if ((ret = rmdir(arg)) < 0) {
+	
+	if ((rmdir(arg)) < 0) {
 		perror("rmdir_test: rmdir() error");
 		return -1;
 	} else	{
