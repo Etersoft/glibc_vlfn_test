@@ -234,9 +234,11 @@ int main (int argc, char* argv[]) {
 	err += unlink("simply_link");
 	err += remove_test(filename);
 	err += mkdir_test(filename);
+	err += read_open_dir_test(filename);
 	err += rmdir_test(filename);
 	
 	printf("Errors: %d\n", (-err));
 	
 	return 0;
+	
 }
