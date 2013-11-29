@@ -56,6 +56,17 @@ int stat_test(char* arg) {
 		}
 }
 
+int lstat_test(char* arg) {
+	struct stat stbuf;
+	if ((lstat(arg, &stbuf)) == -1) {
+		perror("lstat_test: lstat() error");
+		return -1;
+	} else	{
+		printf("lstat_test: working \n");
+		return 0;
+		}
+}
+
 
 int unlink_test(char* arg) {
 	
@@ -212,13 +223,14 @@ int main (int argc, char* argv[]) {
 		filename = argv[1]; 
 	else
 		filename = "ещеболеедлинноеоченьдлинноеимяоченьдлинноеимяоченьдлинноеимяоченьдлинноеимяоченьдлинноеимя\
-оченьдлинноеимяоченьдлинноеимяоченьдлинноеимяоченьдлинноеимя";
+оченьдлинноеимяоченьдлинноеимяоченьдлинноеимяоченьдлинноеимя. С точкой и пробелами.";
 	int err = 0;
 	err += creat_test(filename);
 	err += access_test(filename);
 	err += chmod_test(filename);
 	err += open_test(filename);
 	err += stat_test(filename);
+	err += lstat_test(filename);
 	err += read_open_dir_test(filename);
 
 	err += unlink_test(filename);
