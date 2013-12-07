@@ -8,135 +8,133 @@
 #include <string.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 extern int lstat(const char *file_name, struct stat *buf);
 extern int truncate(const char *path, off_t length);
 extern int symlink(const char *topath, const char *frompath);
 
-int open_test(char* arg) {
+int failed = 0;
+int passed = 0;
+
+void open_test(char* arg, bool legal) {
 	int fd;
+	errno = 0; int koef = -1; if (legal == true) koef = 1; int retval = 1;
 	if ((fd = open(arg,  O_RDONLY, 0)) < 0) {
-		perror("open_test: open() error");
-		return -1;
+		retval = -1*koef;
 	} else	{
-		printf("open_test: working\n");
+		retval = 1*koef;
 		close(fd);
-		return 0;
 		}
+	if (retval < 0) { perror("open_test()"); failed = failed+1; } else { printf("."); passed = passed+1; }
 
 }
 
-int creat_test(char* arg) {
+void creat_test(char* arg, bool legal) {
+	errno = 0; int koef = -1; if (legal == true) koef = 1; int retval = 1;
 	if ((creat(arg,  0)) < 0) {
-		perror("crear_test: creat() error");
-		return -1;
+		retval = -1*koef;
 	} else {
-		printf("creat_test: working\n");
-		return 0;
+		retval = 1*koef;
 		}
+       if (retval < 0) { perror("creat_test()"); failed = failed+1; } else { printf("."); passed = passed+1; }
 }
 
-int fopen_test(char* arg) {
+void fopen_test(char* arg, bool legal) {
 	FILE* fp;
+	errno = 0; int koef = -1; if (legal == true) koef = 1; int retval = 1;
 	if ((fp = fopen(arg, "r")) == NULL) {
-		perror("fopen_test: fopen() error");
-		return -1;
+		retval = -1*koef;
 	} else	{
-		printf("fopen_test: working\n");
-		return 0;
+		retval = 1*koef;
 		fclose(fp);
 		}
+       if (retval < 0) { perror("fopen_test()"); failed = failed+1; } else { printf("."); passed = passed+1; }
 }
 
 
-int stat_test(char* arg) {
+void stat_test(char* arg, bool legal) {
 	struct stat stbuf;
+	errno = 0; int koef = -1; if (legal == true) koef = 1; int retval = 1;
 	if ((stat(arg, &stbuf)) == -1) {
-		perror("stat_test: stat() error");
-		return -1;
+		retval = -1*koef;
 	} else	{
-		printf("stat_test: working \n");
-		return 0;
+		retval = 1*koef;
 		}
+       if (retval < 0) { perror("stat_test()"); failed = failed+1; } else { printf("."); passed = passed+1; }
 }
 
-int lstat_test(char* arg) {
+void lstat_test(char* arg, bool legal) {
 	struct stat stbuf;
+	errno = 0; int koef = -1; if (legal == true) koef = 1; int retval = 1;
 	if ((lstat(arg, &stbuf)) == -1) {
-		perror("lstat_test: lstat() error");
-		return -1;
+		retval = -1*koef;
 	} else	{
-		printf("lstat_test: working \n");
-		return 0;
+		retval = 1*koef;
 		}
+       if (retval < 0) { perror("lstat_test()"); failed = failed+1; } else { printf("."); passed = passed+1; }
 }
 
 
-int unlink_test(char* arg) {
-	
+void unlink_test(char* arg, bool legal) {
+	errno = 0; int koef = -1; if (legal == true) koef = 1; int retval = 1;
 	if ((unlink(arg)) < 0) {
-		perror("unlink_test: unlink() error");
-		return -1;
+		retval = -1*koef;
 	} else	{
-		printf("unlink_test: working \n");
-		return 0;
+		retval = 1*koef;
 		}
+       if (retval < 0) { perror("unlink_test()"); failed = failed+1; } else { printf("."); passed = passed+1; }
 }
 
-int remove_test(char* arg) {
-	
+void remove_test(char* arg, bool legal) {
+	errno = 0; int koef = -1; if (legal == true) koef = 1; int retval = 1;
 	if ((remove(arg)) < 0) {
-		perror("remove_test: remove() error");
-		return -1;
+		retval = -1*koef;
 	} else	{
-		printf("remove_test: working \n");
-		return 0;
+		retval = 1*koef;
 		}
+       if (retval < 0) { perror("remove_test()"); failed = failed+1; } else { printf("."); passed = passed+1; }
 }
 
-int access_test(char* arg) {
-	
+void access_test(char* arg, bool legal) {
+	errno = 0; int koef = -1; if (legal == true) koef = 1; int retval = 1;
 	if ((access(arg, F_OK)) < 0) {
-		perror("access_test: access() error");
-		return -1;
+		retval = -1*koef;
 	} else	{
-		printf("access_test: working\n");
-		return 0;
+		retval = 1*koef;
 		}
+       if (retval < 0) { perror("access_test()"); failed = failed+1; } else { printf("."); passed = passed+1; }
 }
 
-int chmod_test(char* arg) {
-	
+void chmod_test(char* arg, bool legal) {
+	errno = 0; int koef = -1; if (legal == true) koef = 1; int retval = 1;
 	if ((chmod(arg, S_IRWXU)) < 0) {
-		perror("chmod_test: chmod() error");
-		return -1;
+		retval = -1*koef;
 	} else	{
-		printf("chmod_test: working\n");
-		return 0;
+		retval = 1*koef;
 		}
+       if (retval < 0) { perror("chmod_test()"); failed = failed+1; } else { printf("."); passed = passed+1; }
 }
 
-int truncate_test(char* arg) {
-	
+void truncate_test(char* arg, bool legal) {
+	errno = 0; int koef = -1; if (legal == true) koef = 1; int retval = 1;
 	if ((truncate(arg, 100000)) < 0) {
-		perror("truncate_test: truncate() error");
-		return -1;
+		retval = -1*koef;
 	} else	{
-		printf("truncate_test: working\n");
-		return 0;
+		retval = 1*koef;
 		}
+       if (retval < 0) { perror("truncate_test()"); failed = failed+1; } else { printf("."); passed = passed+1; }
 }
 
 
 
 
-int read_open_dir_test(char* arg ) {
+void read_open_dir_test(char* arg, bool legal) {
 	DIR *dir;		/*analogue FILE*/
-		
+	errno = 0; int koef = -1; if (legal == true) koef = 1; int retval = 1;
 	if ((dir=opendir("./"))==0)
 	    {
-	        perror("Diropen error\n");
-	        return -1;
+	        retval = -1*koef;
 	    };
 	    
 	/* Prosmotr failov vnutri direktorii, esli sozdan file - vyvod dannyh o nem na ekran*/
@@ -148,72 +146,66 @@ int read_open_dir_test(char* arg ) {
 	    while( (entry = readdir(dir)) != NULL ) {
 		if (!strcmp(entry->d_name, arg))
 		{
-		    printf("read_open_dir_test: working\n");
 		    exsts++;
 		};
 	};
-	if (!exsts)	{  
-		printf("read_open_dir_test: File isn't found\n"); 
-		return -1;
-		} else return 0;
+	if (!exsts)	{ 
+		retval = -1*koef;
+		} else retval = 1*koef;
+	 if (retval < 0) { printf("read_open_dir error"); failed = failed+1; } else { printf("."); passed = passed+1; }
 }
 
-int link_test(char* arg1, char* arg2) {
-	
+void link_test(char* arg1, char* arg2, bool legal) {
+	errno = 0; int koef = -1; if (legal == true) koef = 1; int retval = 1;
 	if ((link(arg1, arg2)) < 0) {
-		perror("link_test: link() error");
-		return -1;
+		retval = -1*koef;
 	} else	{
-		printf("link_test: working\n");
-		return 0;
+		retval = 1*koef;
 		}
+	if (retval < 0) { perror("link_test()"); failed = failed+1; } else { printf("."); passed = passed+1; }
 }
 
 
-int rename_test(char* arg1, char* arg2) {
-	
+void rename_test(char* arg1, char* arg2, bool legal) {
+	errno = 0; int koef = -1; if (legal == true) koef = 1; int retval = 1;
 	if ((rename(arg1, arg2)) < 0) {
-		perror("rename_test: rename() error");
-		return -1;
+		retval = -1*koef;
 	} else	{
-		printf("rename_test: working\n");
-		return 0;
+		retval = 1*koef;
 		}
+	if (retval < 0) { perror("rename_test()"); failed = failed+1; } else { printf("."); passed = passed+1; }
 }
 
 
-int symlink_test(char* arg1, char* arg2) {
-	
+void symlink_test(char* arg1, char* arg2, bool legal) {
+	errno = 0; int koef = -1; if (legal == true) koef = 1; int retval = 1;
 	if ((symlink(arg1, arg2)) < 0) {
-		perror("symlink_test: symlink() error");
-		return -1;
+		retval = -1*koef;
 	} else	{
-		printf("symlink_test: working\n");
-		return 0;
+		retval = 1*koef;
 		}
+	if (retval < 0) { perror("symlink_test()"); failed = failed+1; } else { printf("."); passed = passed+1; }
 }
 
 
-int mkdir_test(char* arg) {
-	
+void mkdir_test(char* arg, bool legal) {
+	errno = 0; int koef = -1; if (legal == true) koef = 1; int retval = 1;
 	if ((mkdir(arg, S_IRUSR)) < 0) {
-		perror("mkdir_test: mkdir() error");
-		return -1;
+		retval = -1*koef;
 	} else	{
-		printf("mkdir_test: working\n");
-		return 0;
+		retval = 1*koef;
 		}
+	if (retval < 0) { perror("mkdir_test()"); failed = failed+1; } else { printf("."); passed = passed+1; }
 }
 
-int rmdir_test(char* arg) {
-	
+void rmdir_test(char* arg, bool legal) {
+	errno = 0; int koef = -1; if (legal == true) koef = 1; int retval = 1;
 	if ((rmdir(arg)) < 0) {
-		perror("rmdir_test: rmdir() error");
-		return -1;
+		retval = -1*koef;
 	} else	{
-		printf("rmdir_test: working\n");
-		return 0;
+		retval = 1*koef;
 		}
+	if (retval < 0) { perror("rmdir_test()"); failed = failed+1; } else { printf("."); passed = passed+1; }
 }
 
 
@@ -231,34 +223,36 @@ int main (int argc, char* argv[]) {
 Сделаем имя очень длинным. Вряд ли кому-то в голову придет называть файл таким длинным именем. Даже чуть длиннее,\
 проверим символы: АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ и нижние буквы абвгдеёжзийклмнопрстуфхцчшщъыьэюя. Возможно, \
 я ошибся с порядком, поэтому проверю знаки: !№;%:?*()_-+=. Я точно не знаю, сколько они занимают байт, думаю, что\
-немного. И...конец!!!";
+немного. И...конец!!!!";
 
-	int err = 0;
-	err += creat_test(filename);
-	err += access_test(filename);
-	err += chmod_test(filename);
-	err += open_test(filename);
-	err += stat_test(filename);
-	err += lstat_test(filename);
-	err += read_open_dir_test(filename);
-
-	err += unlink_test(filename);
-	err += creat_test(filename);
-	err += symlink_test(filename, "simply_symlink");
-	err += unlink("simply_symlink");
-	err += rename(filename, "newname");
-	err += rename("newname", filename);
-	err += chmod_test(filename);
-	err += fopen_test(filename);
-	err += truncate_test(filename);
-	err += link_test(filename, "simply_link");
-	err += unlink("simply_link");
-	err += remove_test(filename);
-	err += mkdir_test(filename);
-	err += read_open_dir_test(filename);
-	err += rmdir_test(filename);
+	bool legal = true;
+	if (strlen(filename) > 1023) legal = false;
+	printf("Testing glibc functions with %d-byte filename", strlen(filename));
+	creat_test(filename, legal);
+	access_test(filename, legal);
+	chmod_test(filename, legal);
+	open_test(filename, legal);
+	stat_test(filename, legal);
+	lstat_test(filename, legal);
+	read_open_dir_test(filename, legal);
+	unlink_test(filename, legal);
+	creat_test(filename, legal);
+	symlink_test(filename, "simply_symlink", legal);
+	unlink_test("simply_symlink", legal);
+	rename_test(filename, "newname", legal);
+	rename_test("newname", filename, legal);
+	chmod_test(filename, legal);
+	fopen_test(filename, legal);
+	truncate_test(filename, legal);
+	link_test(filename, "simply_link", legal);
+	unlink_test("simply_link", legal);
+	remove_test(filename, legal);
+	mkdir_test(filename, legal);
+	read_open_dir_test(filename, legal);
+	rmdir_test(filename, legal);
 	
-	printf("Errors: %d\n", (-err));
+	if (failed == 0) printf("OK\n");
+	printf("\nPASSED: %d, FAILED: %d\n", passed, failed);
 	
 	return 0;
 	
