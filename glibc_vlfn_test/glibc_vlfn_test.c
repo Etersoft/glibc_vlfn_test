@@ -161,30 +161,57 @@ int read_open_dir_test(char* arg) {
 }
 
 int main (int argc, char* argv[]) {
-	char *filename;
+	char *filename[2];
 	int failed = 0;
 	int passed = 0;
-	if (argv[1] != 0)
-		filename = argv[1];
-	else
-	        filename = "оченьдлинноеимяоченьдлинноеимяоченьдлинноеимяоченьдлинноеимякомунужнытакиеименаочень\
+	filename[0] = "оченьдлинноеимяоченьдлинноеимяоченьдлинноеимяоченьдлинноеимякомунужнытакиеименаочень\
+длинноеимяоченьдлинноеимяоченьдлинноеимяоченьдлинноеимяидлиннаяконцовкас тремя пробелами .И заглавной буквой.\
+Сделаем имя очень длинным. Вряд ли кому-то в голову придет называть файл таким длинным именем. Даже чуть длиннее,\
+проверим символы: АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ и нижние буквы абвгдеёжзийклмнопрстуфхцчшщъыьэюя. Возможно, \
+я ошибся с порядком, поэтому проверю знаки: !№;%:?*()_-+=. Я точно не знаю, сколько они занимают байт, думаю, что\
+немного. И...конец!!!";
+
+	filename[1] = "оченьдлинноеимяоченьдлинноеимяоченьдлинноеимяоченьдлинноеимякомунужнытакиеименаочень\
 длинноеимяоченьдлинноеимяоченьдлинноеимяоченьдлинноеимяидлиннаяконцовкас тремя пробелами .И заглавной буквой.\
 Сделаем имя очень длинным. Вряд ли кому-то в голову придет называть файл таким длинным именем. Даже чуть длиннее,\
 проверим символы: АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ и нижние буквы абвгдеёжзийклмнопрстуфхцчшщъыьэюя. Возможно, \
 я ошибся с порядком, поэтому проверю знаки: !№;%:?*()_-+=. Я точно не знаю, сколько они занимают байт, думаю, что\
 немного. И...конец!!!!";
-
-	int nameLength = strlen(filename);
-#define failing() (({++failed; perror("Error"); printf("line:%d; file: %s\n", __LINE__, __FILE__); }))
-#define passing() (++passed)
-# if (nameLength <= 1023)
-	#define ok(x) ((x) ? (passing()) : (failing()))
-# else
-	#define ok(x) ((x) ? (failing() : (passing())))
-# endif
 	
-	printf("Testing glibc functions with %d-byte filename\n", strlen(filename));
-	ok(creat_test(filename));
-	printf("FAILED: %d, PASSED: %d\n", failed, passed);
+	
+#define failing() (({++failed; /* perror("Error"); printf("line:%d; file: %s\n", __LINE__, __FILE__);*/ }))
+#define passing() (++passed)
 
+#define ok(x) ((x) != (strlen(filename[i]) < 1024)) ? (passing()) : (failing()) 
+
+//	#define ok(x) ((x) ? (failing()) : (passing())) 
+
+	for(int i=0; i <= 1; i++) {
+		printf("Testing glibc functions with %d-byte filename\n", strlen(filename[i]));
+		ok(creat_test(filename[i]));
+		ok(access_test(filename[i]));
+		ok(chmod_test(filename[i]));
+		ok(open_test(filename[i]));
+		ok(stat_test(filename[i])); 
+		ok(lstat_test(filename[i])); 
+		ok(read_open_dir_test(filename[i])); 
+		ok(unlink_test(filename[i]));
+		ok(creat_test(filename[i]));
+		ok(symlink_test(filename[i], "simply_symlink"));
+		ok(unlink_test("simply_symlink"));
+		ok(rename_test(filename[i], "newname"));
+		ok(rename_test("newname", filename[i]));
+		ok(chmod_test(filename[i]));
+		ok(fopen_test(filename[i]));
+		ok(truncate_test(filename[i]));
+		ok(link_test(filename[i], "simply_link"));
+		ok(unlink_test("simply_link"));
+		ok(remove_test(filename[i]));
+		ok(mkdir_test(filename[i]));
+		ok(read_open_dir_test(filename[i]));
+		ok(rmdir_test(filename[i]));
+		printf("FAILED: %d, PASSED: %d\n", failed, passed);
+		failed = 0;
+		passed = 0;
+	}
 }
