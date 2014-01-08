@@ -179,10 +179,10 @@ int main (int argc, char* argv[]) {
 немного. И...конец!!!!";
 	
 	
-#define failing() (({++failed;   printf("Error in line:%d; file: %s: %s\n", __LINE__, __FILE__, strerror(errno));}))
-#define passing() (++passed)
+#define failing printf("Error in line:%d; file: %s: %s\n", __LINE__, __FILE__, strerror(errno)), failed++
+#define passing ++passed
 
-#define ok(x) ((x) == (strlen(filename[i]) < 1024)) ? (passing()) : (failing()) 
+#define ok(x) ((x) == (strlen(filename[i]) < 1024)) ? (passing) : (failing)
 
 //	#define ok(x) ((x) ? (failing()) : (passing())) 
 
