@@ -179,10 +179,10 @@ int main (int argc, char* argv[]) {
 немного. И...конец!!!!";
 	
 	
-#define failing() (({++failed; /* perror("Error"); printf("line:%d; file: %s\n", __LINE__, __FILE__);*/ }))
+#define failing() (({++failed;   printf("Error in line:%d; file: %s: %s\n", __LINE__, __FILE__, strerror(errno));}))
 #define passing() (++passed)
 
-#define ok(x) ((x) != (strlen(filename[i]) < 1024)) ? (passing()) : (failing()) 
+#define ok(x) ((x) == (strlen(filename[i]) < 1024)) ? (passing()) : (failing()) 
 
 //	#define ok(x) ((x) ? (failing()) : (passing())) 
 
@@ -197,8 +197,8 @@ int main (int argc, char* argv[]) {
 		ok(read_open_dir_test(filename[i])); 
 		ok(unlink_test(filename[i]));
 		ok(creat_test(filename[i]));
-		ok(symlink_test(filename[i], "simply_symlink"));
-		ok(unlink_test("simply_symlink"));
+//		ok(symlink_test(filename[i], "simply_symlink")); 	//always successful 
+//		ok(unlink_test("simply_symlink"));			//due to symlink success always successful too
 		ok(rename_test(filename[i], "newname"));
 		ok(rename_test("newname", filename[i]));
 		ok(chmod_test(filename[i]));
@@ -210,7 +210,7 @@ int main (int argc, char* argv[]) {
 		ok(mkdir_test(filename[i]));
 		ok(read_open_dir_test(filename[i]));
 		ok(rmdir_test(filename[i]));
-		printf("FAILED: %d, PASSED: %d\n", failed, passed);
+		printf("FAILED: %d, PASSED: %d\n\n", failed, passed);
 		failed = 0;
 		passed = 0;
 	}
