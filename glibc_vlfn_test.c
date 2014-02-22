@@ -154,6 +154,7 @@ int read_open_dir_test(char* arg) {
                    exsts++;
                };
         };
+	closedir(dir);
         if (!exsts)
 		return false;
 	else
@@ -187,7 +188,7 @@ int main (int argc, char* argv[]) {
 //	#define ok(x) ((x) ? (failing()) : (passing())) 
 
 	for(int i=0; i <= 1; i++) {
-		printf("Testing glibc functions with %d-byte filename\n", strlen(filename[i]));
+		printf("Testing glibc functions with %zd-byte filename\n", strlen(filename[i]));
 		ok(creat_test(filename[i]));
 		ok(access_test(filename[i]));
 		ok(chmod_test(filename[i]));

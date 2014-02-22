@@ -1,0 +1,2 @@
+These are simply tests for glibc library.
+Their perpose is to check main glibc functions running with long filenames(1023 and 1024 byte)
