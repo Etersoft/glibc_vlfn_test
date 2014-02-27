@@ -8,164 +8,80 @@
 #include <string.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include "filename_generator.h"
+#include "glibc_tests.h"
 
-#define true 1
-#define false 0
-
-int open_test(char* arg) {
-	int fd;
-	errno = 0;
-	if ((fd = open(arg,  O_RDONLY, 0)) > 0) {
-	         close(fd);
-		 return true;
-		 } else return false;
-}
-
-
-int creat_test(char* arg) {
-#line 26
-	errno = 0;
-	if ((creat(arg,  0)) < 0) return false;
-	else return true;
-}
-
-int fopen_test(char* arg) {
-        FILE* fp;
-        errno = 0;
-        if ((fp = fopen(arg, "r")) != NULL) {
-		fclose(fp);
-		return true;
-	} else return false;
-}
-
-int stat_test(char* arg) {
-	struct stat stbuf;
-	errno = 0;
-	if ((stat(arg, &stbuf)) == -1)
-		return false; 
-	else return true;
-}
-
-
-int lstat_test(char* arg) {
-	        struct stat stbuf;
-		errno = 0;
-		if ((lstat(arg, &stbuf)) == -1) 
-			return false; 
-		else
-			return true;
-}
-
-int unlink_test(char* arg) {
-	errno = 0;
-	if ((unlink(arg)) < 0)
-		return false;
-	else
-		return true;
-}
-
-int remove_test(char* arg) {
-	errno = 0;
-        if ((remove(arg)) < 0)
-		return false;
-	else
-		return true;
-}
-
-int access_test(char* arg) {
-	errno = 0;
-	if ((access(arg, F_OK)) < 0)
-                return false;
-	else
-		return true;
-}
-
-int chmod_test(char* arg){
-	errno = 0;
-	if ((chmod(arg, S_IRWXU)) < 0)
-		return false;
-	else
-		return true;
-}
-
-int truncate_test(char* arg) {
-        errno = 0;
-	if ((truncate(arg, 100000)) < 0)
-		return false;
-	else
-		return true;
-}
-
-int link_test(char* arg1, char* arg2) {
-        errno = 0;
-        if ((link(arg1, arg2)) < 0)
-		return false;
-	else
-		return true;
-}
-
-
-int rename_test(char* arg1, char* arg2) {
-	errno = 0;
-        if ((rename(arg1, arg2)) < 0) 
-		return false;
-	else
-		return true;
-}
-
-int symlink_test(char* arg1, char* arg2) {
-        errno = 0;
-	if ((symlink(arg1, arg2)) < 0)
-		return false;
-	else
-		return true;
-}
-
-int mkdir_test(char* arg) {
-	errno = 0;
-	if ((mkdir(arg, S_IRUSR)) < 0) 
-		return false;
-	else
-		return true;
-}
-
-int rmdir_test(char* arg) {
-	errno = 0;
-	if ((rmdir(arg)) < 0)
-		return false;
-	else
-		return true;
-}
-
-int read_open_dir_test(char* arg) {
-        DIR *dir;               /*analogue FILE*/
-        errno = 0;
-        if ((dir=opendir("./"))==0)
-            return false;
-
-        /* Prosmotr failov vnutri direktorii, esli sozdan file - vyvod dannyh o nem na ekran*/
- 
-	/* Searching for created file by its name*/
-	int exsts = 0;
-	struct dirent *entry;
-
-	while( (entry = readdir(dir)) != NULL ) {
-	       if (!strcmp(entry->d_name, arg)) {
-                   exsts++;
-               };
-        };
-	closedir(dir);
-        if (!exsts)
-		return false;
-	else
-       		return true;
-}
 
 int main (int argc, char* argv[]) {
-	char *filename[2];
 	int failed = 0;
 	int passed = 0;
-	filename[0] = "оченьдлинноеимяоченьдлинноеимяоченьдлинноеимяоченьдлинноеимякомунужнытакиеименаочень\
+	int testing_length = 1024;
+	int opt;
+	size_t englen = 0;
+	size_t ruslen = 0;
+	char * rusname = NULL;
+	char * engname = NULL;
+	if (argc == 1) {
+		printf("Type \"test -h\" for help\n");
+                exit(1);
+	}
+	while((opt = getopt(argc, argv, "he:r:l:")) != -1) {
+		switch (opt) {
+			case 'h':
+				printf("Usage:\n -e <num> - tests for english filename "
+				"with <num> length. Don't use it with -r; \n "
+				"-r <num> - tests for russian filname "
+				"with <num> length. Don't use it with -e; \n "
+				"-l <num> - length of testing bound; \n"
+				"-h - print this help\n");
+				exit(1);
+			case 'e':
+				englen = atoi(optarg);
+				if (englen <= 0 || englen >= 4096) {
+					printf("Wrong english filename length\n");
+					exit(1);
+				} else {				
+					engname = calloc(englen, sizeof(char)+1);
+					generate_eng_filename(englen, engname);
+					break;
+				}
+			case 'r':
+				ruslen = atoi(optarg);
+                                
+				if (ruslen <= 0 || ruslen >= 4096) {
+					printf("Wrong russian filename length\n");
+					exit(1);
+				} else {
+					rusname = calloc(ruslen, 2*sizeof(char)+1);
+					generate_rus_filename(ruslen, rusname);
+					break;
+				}
+			case 'l':
+				testing_length = atoi(optarg);
+				if (testing_length <= 0 || testing_length >= 4095) {
+					printf("Wrong testing length %d. Must be"
+					"between 0 and 4094", testing_length );
+					exit(1);
+				}
+				break;
+			default:
+				printf("Type \"test -h\" for help\n");
+				exit(1);
+		}
+	}
+
+
+
+	/*Request for parameter - length of the filename, from which searching of the largest available filename starts*/
+	char* filename = NULL;
+	errno = 0;	
+
+	if (ruslen) {
+		filename = rusname;
+	} else if (englen) {
+		filename = engname;
+		}
+/*	filename[0] = "оченьдлинноеимяоченьдлинноеимяоченьдлинноеимяоченьдлинноеимякомунужнытакиеименаочень\
 длинноеимяоченьдлинноеимяоченьдлинноеимяоченьдлинноеимяидлиннаяконцовкас тремя пробелами .И заглавной буквой.\
 Сделаем имя очень длинным. Вряд ли кому-то в голову придет называть файл таким длинным именем. Даже чуть длиннее,\
 проверим символы: АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ и нижние буквы абвгдеёжзийклмнопрстуфхцчшщъыьэюя. Возможно, \
@@ -178,41 +94,40 @@ int main (int argc, char* argv[]) {
 проверим символы: АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ и нижние буквы абвгдеёжзийклмнопрстуфхцчшщъыьэюя. Возможно, \
 я ошибся с порядком, поэтому проверю знаки: !№;%:?*()_-+=. Я точно не знаю, сколько они занимают байт, думаю, что\
 немного. И...конец!!!!";
-	
+*/	
 	
 #define failing printf("Error in line:%d; file: %s: %s\n", __LINE__, __FILE__, strerror(errno)), failed++
 #define passing ++passed
 
-#define ok(x) ((x) == (strlen(filename[i]) < 1024)) ? (passing) : (failing)
+#define ok(x) ((x) == (strlen(filename) < testing_length)) ? (passing) : (failing)
 
 //	#define ok(x) ((x) ? (failing()) : (passing())) 
 
-	for(int i=0; i <= 1; i++) {
-		printf("Testing glibc functions with %zd-byte filename\n", strlen(filename[i]));
-		ok(creat_test(filename[i]));
-		ok(access_test(filename[i]));
-		ok(chmod_test(filename[i]));
-		ok(open_test(filename[i]));
-		ok(stat_test(filename[i])); 
-		ok(lstat_test(filename[i])); 
-		ok(read_open_dir_test(filename[i])); 
-		ok(unlink_test(filename[i]));
-		ok(creat_test(filename[i]));
-//		ok(symlink_test(filename[i], "simply_symlink")); 	//always successful 
-//		ok(unlink_test("simply_symlink"));			//due to symlink success always successful too
-		ok(rename_test(filename[i], "newname"));
-		ok(rename_test("newname", filename[i]));
-		ok(chmod_test(filename[i]));
-		ok(fopen_test(filename[i]));
-		ok(truncate_test(filename[i]));
-		ok(link_test(filename[i], "simply_link"));
+		printf("Testing glibc functions with %zd-byte filename\n", strlen(filename));
+		ok(creat_test(filename));
+		ok(access_test(filename));
+		ok(chmod_test(filename));
+		ok(open_test(filename));
+		ok(stat_test(filename)); 
+		ok(lstat_test(filename)); 
+		ok(read_open_dir_test(filename)); 
+		ok(unlink_test(filename));
+		ok(creat_test(filename));
+		ok(rename_test(filename, "newname"));
+		ok(rename_test("newname", filename));
+		ok(chmod_test(filename));
+		ok(fopen_test(filename));
+		ok(truncate_test(filename));
+		ok(link_test(filename, "simply_link"));
 		ok(unlink_test("simply_link"));
-		ok(remove_test(filename[i]));
-		ok(mkdir_test(filename[i]));
-		ok(read_open_dir_test(filename[i]));
-		ok(rmdir_test(filename[i]));
+		ok(remove_test(filename));
+		ok(symlink_test( "simply_symlink", filename));
+		ok(unlink_test(filename));
+		ok(mkdir_test(filename));
+		ok(read_open_dir_test(filename));
+		ok(rmdir_test(filename));
 		printf("FAILED: %d, PASSED: %d\n\n", failed, passed);
 		failed = 0;
 		passed = 0;
-	}
+
 }
