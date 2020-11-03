@@ -1,11 +1,7 @@
 These are simply tests for glibc library.
-Their perpose is to check main glibc functions running with long filenames(1023 and 1024 byte)
+Their purpose is to check main glibc functions running with long filenames(1023 and 1024 byte)
 
-Current task: why open_read_dir function succesful on lonf files, 
-really needed changlog format here? Add more description may be.
+Current task: why open_read_dir function successful on long files.
 
-2014-02-24  Obrezkov Denis <reprofy@etersoft.com>
-	[Eterbug #9614]
-	filename_generator.c : Generating latin and cyrillic filenames
-	glibc_vlfc_test : Added command line option parser
-	glibc_tests.c : All functions which are tests are here.
+See also
+https://wiki.etersoft.ru/Linux/VLFN
